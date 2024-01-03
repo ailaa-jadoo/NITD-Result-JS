@@ -26,10 +26,10 @@ th {
     border:0 !important;
     box-shadow: none !important;
 }
-.accordion-button{
-    color: white !important;
-    background-color: #282828 !important;
-    border-radius: 5px !important;
+#acc-btn{
+    color: white;
+    background-color: #282828;
+    border-radius: 5px;
 }
 .accordion-button:not(.collapsed) {
     color: white !important;
