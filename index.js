@@ -21,8 +21,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/profile', async (req, res) => {
-    const studentId = req.query.student_id;
-    // const studentId = 'NITDSTUT2012A0000071';
+    const studentRoll = req.query.rollnum;
     
     const important = {
         httpsAgent: httpsAgent,
@@ -42,6 +41,11 @@ app.get('/profile', async (req, res) => {
             'X-Requested-With': 'XMLHttpRequest'
         },
     }
+
+    const id = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=validate&refor=StudentOnlineDetailService";
+    const dataForID = `jdata={"sid":"validate","instituteID":"NITDINSD1506A0000001","studentrollno":"${studentRoll}"}`;
+    const idResponse  = await axios.post(id, dataForID, important);
+    let studentId = idResponse.data;
     
     const details = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=2002&refor=StudentSeatingMasterService";
     const sgcg = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=2005&refor=StudentSeatingMasterService";
@@ -49,8 +53,8 @@ app.get('/profile', async (req, res) => {
 
     const dataToSend1 = `jdata={"sid":"2002","mname":"ExamSgpaCgpaDetailOfStudent","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","registrationID":"NITDRETD2208A0000001"}`;
     const dataToSend2 = `jdata={"sid":"2002","mname":"ExamSgpaCgpaDetailOfStudent","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","registrationID":"NITDRETD2208A0000001"}`;
-    const detailsResponse  = await axios.post(details, dataToSend1, important);
 
+    const detailsResponse  = await axios.post(details, dataToSend1, important);
     const sgcgResponse  = await axios.post(sgcg, dataToSend2, important);
 
     const gradesData = [];
@@ -71,7 +75,7 @@ app.get('/profile', async (req, res) => {
 
     let detailsData = detailsResponse.data;
     let sgcgData = sgcgResponse.data;
-    res.render('profile', { detailsData, sgcgData, gradesData, collapse, semester});
+    res.render('profile', { detailsData, sgcgData, gradesData, collapse, semester, studentId});
 });
 
 
