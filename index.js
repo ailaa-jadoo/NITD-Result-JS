@@ -10,7 +10,7 @@ const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
 });
 
-app.use(compression())
+app.use(compression({ brotli: { enabled: true, zlib: { } } }))
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
