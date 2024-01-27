@@ -44,9 +44,9 @@ app.get('/profile', async (req, res) => {
 
     const id = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=validate&refor=StudentOnlineDetailService";
     const dataForID = `jdata={"sid":"validate","instituteID":"NITDINSD1506A0000001","studentrollno":"${studentRoll}"}`;
-    const idResponse  = await axios.post(id, dataForID, important);
+    const idResponse = await axios.post(id, dataForID, important);
     let studentId = idResponse.data;
-    
+
     const details = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=2002&refor=StudentSeatingMasterService";
     const sgcg = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=2005&refor=StudentSeatingMasterService";
     const grades = "https://erp.nitdelhi.ac.in/CampusLynxNITD/CounsellingRequest?sid=2003&refor=StudentSeatingMasterService";
@@ -54,21 +54,32 @@ app.get('/profile', async (req, res) => {
     const dataToSend1 = `jdata={"sid":"2002","mname":"ExamSgpaCgpaDetailOfStudent","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","registrationID":"NITDRETD2208A0000001"}`;
     const dataToSend2 = `jdata={"sid":"2002","mname":"ExamSgpaCgpaDetailOfStudent","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","registrationID":"NITDRETD2208A0000001"}`;
 
-    const detailsResponse  = await axios.post(details, dataToSend1, important);
-    const sgcgResponse  = await axios.post(sgcg, dataToSend2, important);
+    const [detailsResponse, sgcgResponse] = await Promise.all([
+        axios.post(details, dataToSend1, important),
+        axios.post(sgcg, dataToSend2, important),
+    ]);
 
     const gradesData = [];
-    for (let stynumber = 1; stynumber <= 8; stynumber++) {
-        const dataToSend3 = `jdata={"sid":"2003","mname":"studentGrade","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","stynumber":${stynumber}}`;
-        const gradesResponse = await axios.post(grades, dataToSend3, important);
 
+    try {
+        const promises = Array.from({ length: 8 }, (_, stynumber) => {
+            const dataToSend3 = `jdata={"sid":"2003","mname":"studentGrade","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","stynumber":${stynumber + 1}}`;
+            return axios.post(grades, dataToSend3, important);
+        });
 
-        if (!gradesResponse.data[0]) {
-            break;
-        }
+        const responses = await Promise.all(promises);
 
-        gradesData.push(gradesResponse.data);
+        responses.forEach((gradesResponse) => {
+            if (gradesResponse.data[0]) {
+                gradesData.push(gradesResponse.data);
+            }
+        });
+        
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
     }
+
 
     const collapse = ["collapseOne", "collapseTwo", "collapseThree", "collapseFour", "collapseFive", "collapseSix", "collapseSeven", "collapseEight"]
     const semester = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"]
