@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const path = require('path');
 const app = express();
 const axios = require('axios');
@@ -9,12 +10,14 @@ const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
 });
 
+app.use(compression());
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-
+const cache = {};
 
 app.get('/', (req, res) => {
     res.render('enterId');
@@ -23,6 +26,10 @@ app.get('/', (req, res) => {
 app.get('/profile', async (req, res) => {
     const studentRoll = req.query.rollnum;
     
+    if (cache[studentRoll]) {
+        return res.render('profile', cache[studentRoll]);
+    }
+
     const important = {
         httpsAgent: httpsAgent,
         headers: {
@@ -86,7 +93,10 @@ app.get('/profile', async (req, res) => {
 
     let detailsData = detailsResponse.data;
     let sgcgData = sgcgResponse.data;
-    res.render('profile', { detailsData, sgcgData, gradesData, collapse, semester, studentId});
+
+    cache[studentRoll] = { detailsData, sgcgData, gradesData, collapse, semester, studentId };
+    
+    res.render('profile', cache[studentRoll]);
 });
 
 
