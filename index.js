@@ -3,11 +3,14 @@ const path = require('path');
 const app = express();
 const axios = require('axios');
 const https = require('https');
+const compression = require('express-compression')
 const port = 3000;
 
 const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
 });
+
+app.use(compression({ brotli: { enabled: true, zlib: { } } }))
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
