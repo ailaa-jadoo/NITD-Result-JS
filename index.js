@@ -1,5 +1,4 @@
 const express = require('express');
-const compression = require('compression');
 const path = require('path');
 const app = express();
 const axios = require('axios');
@@ -9,8 +8,6 @@ const port = 3000;
 const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
 });
-
-app.use(compression());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
