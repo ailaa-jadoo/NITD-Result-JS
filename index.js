@@ -10,10 +10,15 @@ const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
 });
 
-app.use(compression({ brotli: { enabled: true, zlib: { } } }))
+// app.use(compression({ brotli: { enabled: true, zlib: { } } }))
+app.use(compression({ 
+    brotli: { enabled: true, zlib: {} },
+    threshold: 0
+}));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
+app.locals.compileDebug = false;
 
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -66,33 +71,37 @@ app.get('/profile', async (req, res) => {
         axios.post(sgcg, dataToSend2, important),
     ]);
 
+    let detailsData = detailsResponse.data;
+    let sgcgData = sgcgResponse.data;
+
+
     const gradesData = [];
 
-    try {
-        const promises = Array.from({ length: 8 }, (_, stynumber) => {
-            const dataToSend3 = `jdata={"sid":"2003","mname":"studentGrade","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","stynumber":${stynumber + 1}}`;
-            return axios.post(grades, dataToSend3, important);
-        });
-
-        const responses = await Promise.all(promises);
-
-        responses.forEach((gradesResponse) => {
-            if (gradesResponse.data[0]) {
-                gradesData.push(gradesResponse.data);
-            }
-        });
-        
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
+    if(sgcgData){
+        try {
+            const promises = Array.from({ length: 8 }, (_, stynumber) => {
+                const dataToSend3 = `jdata={"sid":"2003","mname":"studentGrade","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","stynumber":${stynumber + 1}}`;
+                return axios.post(grades, dataToSend3, important);
+            });
+    
+            const responses = await Promise.all(promises);
+    
+            responses.forEach((gradesResponse) => {
+                if (gradesResponse.data[0]) {
+                    gradesData.push(gradesResponse.data);
+                }
+            });
+            
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).send("Internal Server Error");
+        }
     }
 
 
     const collapse = ["collapseOne", "collapseTwo", "collapseThree", "collapseFour", "collapseFive", "collapseSix", "collapseSeven", "collapseEight"]
     const semester = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"]
 
-    let detailsData = detailsResponse.data;
-    let sgcgData = sgcgResponse.data;
 
     cache[studentRoll] = { detailsData, sgcgData, gradesData, collapse, semester, studentId };
     
