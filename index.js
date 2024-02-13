@@ -4,7 +4,7 @@ const app = express();
 const axios = require('axios');
 const https = require('https');
 const compression = require('express-compression')
-const port = 3000;
+const port = 3300;
 
 const httpsAgent = new https.Agent({
     rejectUnauthorized: false,
@@ -76,8 +76,8 @@ app.get('/profile', async (req, res) => {
 
 
     const gradesData = [];
-
-    if(sgcgData){
+    
+    if(sgcgData.length != 0){
         try {
             const promises = Array.from({ length: 8 }, (_, stynumber) => {
                 const dataToSend3 = `jdata={"sid":"2003","mname":"studentGrade","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","stynumber":${stynumber + 1}}`;
