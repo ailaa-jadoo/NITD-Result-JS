@@ -79,7 +79,7 @@ app.get('/profile', async (req, res) => {
     
     if(sgcgData.length != 0){
         try {
-            const promises = Array.from({ length: 8 }, (_, stynumber) => {
+            const promises = Array.from({ length: sgcgData.length }, (_, stynumber) => {
                 const dataToSend3 = `jdata={"sid":"2003","mname":"studentGrade","studentID":"${studentId}","instituteID":"NITDINSD1506A0000001","stynumber":${stynumber + 1}}`;
                 return axios.post(grades, dataToSend3, important);
             });
