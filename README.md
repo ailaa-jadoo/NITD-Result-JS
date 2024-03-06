@@ -1,3 +1,3 @@
 # CheckOut here
-- [nitd.tech](nitd.tech)
-- [nitd-results.vercel.app](nitd-results.vercel.app)
+- [nitd.tech](https://nitd.tech/)
+- [nitd-results.vercel.app](https://nitd-results.vercel.app)
