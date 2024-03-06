@@ -12,7 +12,7 @@
     <% if (detailsData[0]) { %>
         <div class="container">
             <hr>
-            <h1 class="sec-color p-sm-4 p-3 text-orange">Student Details <span class="fs-3 text-white align-items-center">(<%= studentId %>)</span></h1>
+            <h1 class="sec-color p-sm-4 p-3 text-orange">Student Details <span class="fs-3 text-white">(<%= studentId %>)</span></h1>
             <hr>
             <div class="row sec-color p-sm-4 p-3 m-0">
                 <div class="col-md p-0">
@@ -27,7 +27,8 @@
 
             <% if (sgcgData[0]) { %>
                 <hr>
-                <h1 class="sec-color p-sm-4 p-3 text-orange">SGPA and CGPA</h1>
+                <!-- <h1 class="sec-color p-sm-4 p-3 text-orange">SGPA and CGPA</h1> -->
+                <h1 class="sec-color p-sm-4 p-3 text-orange">SGPA and CGPA <span class="fs-5 text-white m-0">(Total EC <%= totalearnedcredit %>)</span></h1>
                 <hr>
                 <table class="table table-striped text-center table-hover" border="1">
                     <thead>
@@ -35,7 +36,7 @@
                             <th>SGPA</th>
                             <th>CGPA</th>
                             <th>Semester</th>
-                            <th>Earned Credit</th>
+                            <th>Earned Credit (EC)</th>
                             <th>Date</th>
                         </tr>
                     </thead>

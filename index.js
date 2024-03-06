@@ -76,6 +76,7 @@ app.get('/profile', async (req, res) => {
 
 
     const gradesData = [];
+    let totalearnedcredit = 0;
     
     if(sgcgData.length != 0){
         try {
@@ -92,6 +93,8 @@ app.get('/profile', async (req, res) => {
                 }
             });
 
+            sgcgData.forEach(item => totalearnedcredit += item.totalearnedcredit)
+
         } catch (error) {
             console.error("Error:", error);
             res.status(500).send("Internal Server Error");
@@ -103,7 +106,7 @@ app.get('/profile', async (req, res) => {
     const semester = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"]
 
 
-    cache[studentRoll] = { detailsData, sgcgData, gradesData, collapse, semester, studentId };
+    cache[studentRoll] = { detailsData, sgcgData, gradesData, collapse, semester, studentId, totalearnedcredit };
 
     res.render('profile', cache[studentRoll]);
 });
